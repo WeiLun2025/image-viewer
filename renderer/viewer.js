@@ -232,6 +232,18 @@ function onKeyDown(e) {
       applyDisplayMode();
       showInfoBar();
       break;
+    case 'ARROWLEFT':
+      navigatePrev();
+      break;
+    case 'ARROWRIGHT':
+      navigateNext();
+      break;
+    case 'HOME':
+      navigateFirst();
+      break;
+    case 'END':
+      navigateLast();
+      break;
   }
 }
 
@@ -243,11 +255,27 @@ async function openFile() {
   const filePath = await window.api.openImageDialog();
   if (!filePath) return;
 
-  // 目前只顯示單張，同資料夾瀏覽將在下一個 commit 加入
-  images = [filePath];
-  index  = 0;
-  mode   = 'fit';
-  viewport.classList.remove('scroll-mode');
+  images = window.api.getFolderImages(filePath);
+  index  = images.indexOf(filePath);
+  if (index === -1) { images = [filePath]; index = 0; }
 
-  loadImage(filePath);
+  mode = 'fit';
+  viewport.classList.remove('scroll-mode');
+  loadImage(images[index]);
 }
+
+// ══════════════════════════════════════════════
+// Navigation
+// ══════════════════════════════════════════════
+
+/** 跳到指定索引的圖片（自動邊界保護） */
+function navigateTo(newIndex) {
+  if (images.length === 0) return;
+  index = Math.max(0, Math.min(newIndex, images.length - 1));
+  loadImage(images[index]);
+}
+
+function navigatePrev() { navigateTo(index - 1); }
+function navigateNext() { navigateTo(index + 1); }
+function navigateFirst() { navigateTo(0); }
+function navigateLast()  { navigateTo(images.length - 1); }
