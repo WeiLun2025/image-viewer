@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <!-- 禁止從網路載入任何外部資源，強化安全性 -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; img-src 'self' file: data:; style-src 'self' 'unsafe-inline';" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Viewer</title>
+  <link rel="stylesheet" href="viewer.css" />
+</head>
+<body>
+
+  <!-- 主要圖片顯示區域 -->
+  <div id="viewport">
+    <img id="image" src="" alt="" draggable="false" />
+  </div>
+
+  <!-- 底部資訊列 -->
+  <div id="info-bar">
+    <span id="info-name"></span>
+    <span id="info-index"></span>
+    <span id="info-scale"></span>
+  </div>
+
+  <!-- 快捷鍵說明按鈕（右下角） -->
+  <button id="shortcut-btn" title="快捷鍵說明">⌨</button>
+
+  <!-- 快捷鍵說明彈窗 -->
+  <div id="shortcut-popup" hidden>
+    <h3>快捷鍵</h3>
+    <table>
+      <tr><td><kbd>O</kbd></td><td>開啟圖片</td></tr>
+      <tr><td><kbd>W</kbd></td><td>Fit Window（填滿視窗）</td></tr>
+      <tr><td><kbd>A</kbd></td><td>Actual Size（100%）</td></tr>
+      <tr><td><kbd>S</kbd></td><td>切換長條漫畫模式</td></tr>
+      <tr><td><kbd>← / →</kbd></td><td>上一張 / 下一張</td></tr>
+      <tr><td><kbd>Home / End</kbd></td><td>第一張 / 最後一張</td></tr>
+      <tr><td>滾輪</td><td>縮放（一般）／ 捲動（漫畫模式）</td></tr>
+      <tr><td><kbd>Ctrl</kbd> + 滾輪</td><td>縮放（漫畫模式）</td></tr>
+      <tr><td>雙擊</td><td>Fit Window ↔ Actual Size</td></tr>
+      <tr><td>側鍵 ← / →</td><td>上一張 / 下一張</td></tr>
+    </table>
+  </div>
+
+  <script src="viewer.js"></script>
+</body>
+</html>

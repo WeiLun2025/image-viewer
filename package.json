@@ -1,0 +1,32 @@
+{
+  "name": "image-viewer",
+  "version": "1.0.0",
+  "description": "Personal image viewer with WebP animated support",
+  "main": "main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^41.3.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.personal.image-viewer",
+    "productName": "Image Viewer",
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "files": [
+      "main/**",
+      "preload/**",
+      "renderer/**",
+      "build/**"
+    ]
+  }
+}

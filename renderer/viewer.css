@@ -1,0 +1,162 @@
+/* ── Reset & Base ───────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg:            #1a1a1a;
+  --info-bg:       rgba(0, 0, 0, 0.65);
+  --info-fg:       #e0e0e0;
+  --info-height:   32px;
+  --popup-bg:      rgba(30, 30, 30, 0.95);
+  --popup-border:  rgba(255, 255, 255, 0.12);
+  --popup-fg:      #d0d0d0;
+  --accent:        #5b9cf6;
+  --kbd-bg:        rgba(255, 255, 255, 0.1);
+  --radius:        6px;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--info-fg);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 13px;
+  user-select: none;
+}
+
+/* ── Viewport ───────────────────────────────── */
+#viewport {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;   /* scroll mode 時改為 auto（由 JS 控制） */
+  cursor: default;
+}
+
+#viewport.scroll-mode {
+  overflow-y: auto;
+  overflow-x: hidden;
+  align-items: flex-start;
+}
+
+#image {
+  display: block;
+  /* transform 由 JS 控制：translate + scale */
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+#image.dragging {
+  cursor: grabbing;
+}
+
+/* ── Info Bar ───────────────────────────────── */
+#info-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--info-height);
+  background: var(--info-bg);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 12px;
+  backdrop-filter: blur(4px);
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 10;
+}
+
+#info-bar.hidden {
+  opacity: 0;
+}
+
+#info-name  { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#info-index { white-space: nowrap; color: #aaa; }
+#info-scale { white-space: nowrap; color: var(--accent); min-width: 48px; text-align: right; }
+
+/* ── Shortcut Button ────────────────────────── */
+#shortcut-btn {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--popup-border);
+  border-radius: var(--radius);
+  background: var(--info-bg);
+  color: var(--info-fg);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  z-index: 20;
+  transition: background 0.15s;
+}
+
+#shortcut-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ── Shortcut Popup ─────────────────────────── */
+#shortcut-popup {
+  position: fixed;
+  bottom: 80px;
+  right: 12px;
+  background: var(--popup-bg);
+  border: 1px solid var(--popup-border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  color: var(--popup-fg);
+  backdrop-filter: blur(8px);
+  z-index: 20;
+  min-width: 260px;
+}
+
+#shortcut-popup[hidden] {
+  display: none;
+}
+
+#shortcut-popup h3 {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+#shortcut-popup table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#shortcut-popup td {
+  padding: 3px 0;
+  vertical-align: middle;
+}
+
+#shortcut-popup td:first-child {
+  width: 45%;
+  padding-right: 8px;
+}
+
+kbd {
+  display: inline-block;
+  background: var(--kbd-bg);
+  border: 1px solid var(--popup-border);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-family: inherit;
+  font-size: 12px;
+}
