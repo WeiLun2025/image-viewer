@@ -276,7 +276,11 @@ function onKeyDown(e) {
         mode = 'scroll';
       }
       applyDisplayMode();
-      showInfoBar();
+      if (mode === 'scroll') {
+        showInfoBar('滾輪：捲動　Ctrl + 滾輪：縮放');
+      } else {
+        showInfoBar();
+      }
       break;
   }
 }
