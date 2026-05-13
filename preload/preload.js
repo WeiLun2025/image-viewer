@@ -1,3 +1,5 @@
+// preload/preload.js
+
 'use strict';
 
 const { contextBridge, ipcRenderer } = require('electron');

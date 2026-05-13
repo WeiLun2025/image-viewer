@@ -1,3 +1,5 @@
+// main/main.js
+
 'use strict';
 
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');

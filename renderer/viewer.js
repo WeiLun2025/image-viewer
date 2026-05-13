@@ -1,3 +1,5 @@
+// renderer/viewer.js
+
 'use strict';
 
 // ══════════════════════════════════════════════
@@ -222,6 +224,11 @@ function bindEvents() {
 
   // ── 滾輪：縮放 / 長條漫畫模式捲動 ──
   viewport.addEventListener('wheel', onWheel, { passive: false });
+
+  // ── 拖曳平移 ──
+  viewport.addEventListener('mousedown', onMouseDown);
+  window.addEventListener('mousemove', onMouseMove);
+  window.addEventListener('mouseup', onMouseUp);
 }
 
 function onKeyDown(e) {
@@ -355,4 +362,62 @@ function zoomAtPoint(e) {
 
   applyTransform();
   showInfoBar();
+}
+
+// ══════════════════════════════════════════════
+// Drag to Pan
+// ══════════════════════════════════════════════
+
+function onMouseDown(e) {
+  if (e.button !== 0) return;       // 只處理左鍵
+  if (mode === 'scroll') return;    // 長條漫畫模式不拖曳
+  if (!imgEl.src) return;
+
+  isDragging  = true;
+  dragStartX  = e.clientX;
+  dragStartY  = e.clientY;
+  dragOriginX = translateX;
+  dragOriginY = translateY;
+  imgEl.classList.add('dragging');
+}
+
+function onMouseMove(e) {
+  if (!isDragging) return;
+
+  translateX = dragOriginX + (e.clientX - dragStartX);
+  translateY = dragOriginY + (e.clientY - dragStartY);
+  clampTranslate();
+  applyTransform();
+}
+
+function onMouseUp() {
+  if (!isDragging) return;
+  isDragging = false;
+  imgEl.classList.remove('dragging');
+}
+
+/**
+ * 邊界限制：圖片邊緣不能進入視窗範圍內。
+ * 圖片比視窗小時，固定在中心（translate 歸零）。
+ */
+function clampTranslate() {
+  const { viewW, viewH, imgW, imgH } = getDimensions();
+  const displayW = imgW * scale;
+  const displayH = imgH * scale;
+
+  // 水平
+  if (displayW <= viewW) {
+    translateX = 0;
+  } else {
+    const maxX = (displayW - viewW) / 2;
+    translateX = Math.max(-maxX, Math.min(maxX, translateX));
+  }
+
+  // 垂直
+  if (displayH <= viewH) {
+    translateY = 0;
+  } else {
+    const maxY = (displayH - viewH) / 2;
+    translateY = Math.max(-maxY, Math.min(maxY, translateY));
+  }
 }
