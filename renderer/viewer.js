@@ -208,6 +208,16 @@ function bindEvents() {
   window.addEventListener('resize', () => {
     if (imgEl.src) applyDisplayMode();
   });
+  // ── 雙擊切換 Fit ↔ Actual Size ──
+  imgEl.addEventListener('dblclick', () => {
+    if (!imgEl.src) return;
+    mode = (mode === 'fit') ? 'actual' : 'fit';
+    viewport.classList.remove('scroll-mode');
+    translateX = 0;
+    translateY = 0;
+    applyDisplayMode();
+    showInfoBar();
+  });
 }
 
 function onKeyDown(e) {
