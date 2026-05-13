@@ -208,6 +208,7 @@ function bindEvents() {
   window.addEventListener('resize', () => {
     if (imgEl.src) applyDisplayMode();
   });
+
   // ── 雙擊切換 Fit ↔ Actual Size ──
   imgEl.addEventListener('dblclick', () => {
     if (!imgEl.src) return;
@@ -218,6 +219,9 @@ function bindEvents() {
     applyDisplayMode();
     showInfoBar();
   });
+
+  // ── 滾輪：縮放 / 長條漫畫模式捲動 ──
+  viewport.addEventListener('wheel', onWheel, { passive: false });
 }
 
 function onKeyDown(e) {
@@ -254,6 +258,19 @@ function onKeyDown(e) {
     case 'END':
       navigateLast();
       break;
+    case 'S':
+      if (!imgEl.src) break;
+      if (mode === 'scroll') {
+        mode = 'fit';
+        viewport.classList.remove('scroll-mode');
+        translateX = 0;
+        translateY = 0;
+      } else {
+        mode = 'scroll';
+      }
+      applyDisplayMode();
+      showInfoBar();
+      break;
   }
 }
 
@@ -289,3 +306,53 @@ function navigatePrev() { navigateTo(index - 1); }
 function navigateNext() { navigateTo(index + 1); }
 function navigateFirst() { navigateTo(0); }
 function navigateLast()  { navigateTo(images.length - 1); }
+
+// ══════════════════════════════════════════════
+// Wheel
+// ══════════════════════════════════════════════
+
+function onWheel(e) {
+  e.preventDefault();
+
+  if (mode === 'scroll') {
+    if (e.ctrlKey) {
+      // Ctrl + 滾輪：縮放
+      zoomAtPoint(e);
+    } else {
+      // 純滾輪：垂直捲動
+      viewport.scrollTop += e.deltaY;
+    }
+    return;
+  }
+
+  // 一般模式：縮放
+  zoomAtPoint(e);
+}
+
+/**
+ * 以滑鼠游標位置為基準縮放。
+ * @param {WheelEvent} e
+ */
+function zoomAtPoint(e) {
+  const { imgW, imgH } = getDimensions();
+  const delta     = e.deltaY < 0 ? 1 : -1;
+  const fitScale  = Math.min(viewport.clientWidth / imgW, viewport.clientHeight / imgH);
+  const scaleMin  = fitScale * SCALE_MIN_FACTOR;
+  const newScale  = Math.min(SCALE_MAX, Math.max(scaleMin, scale + delta * SCALE_STEP));
+
+  if (newScale === scale) return;
+
+  // 游標相對於圖片中心的偏移
+  const rect    = imgEl.getBoundingClientRect();
+  const cx      = e.clientX - (rect.left + rect.width  / 2);
+  const cy      = e.clientY - (rect.top  + rect.height / 2);
+
+  // 縮放後維持游標對應點不動
+  const ratio    = newScale / scale;
+  translateX     = cx - ratio * (cx - translateX);
+  translateY     = cy - ratio * (cy - translateY);
+  scale          = newScale;
+
+  applyTransform();
+  showInfoBar();
+}
