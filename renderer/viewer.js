@@ -229,6 +229,12 @@ function bindEvents() {
   viewport.addEventListener('mousedown', onMouseDown);
   window.addEventListener('mousemove', onMouseMove);
   window.addEventListener('mouseup', onMouseUp);
+
+  // ── 滑鼠側鍵切換圖片 ──
+  viewport.addEventListener('mousedown', (e) => {
+    if (e.button === 3) { e.preventDefault(); navigatePrev(); }
+    if (e.button === 4) { e.preventDefault(); navigateNext(); }
+  });
 }
 
 function onKeyDown(e) {
