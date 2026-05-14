@@ -28,6 +28,7 @@ let dragOriginX = 0;
 let dragOriginY = 0;
 
 let infoTimer = null;
+let navDirection = 'none'; // 'next' | 'prev' | 'none'
 
 // ══════════════════════════════════════════════
 // DOM References
@@ -62,6 +63,14 @@ function loadImage(filePath) {
 
   imgEl.onload = () => {
     applyDisplayMode();
+    if (mode === 'scroll') {
+      if (navDirection === 'prev') {
+        viewport.scrollTop = viewport.scrollHeight;
+      } else {
+        viewport.scrollTop = 0;
+      }
+    }
+    navDirection = 'none';
     showInfoBar();
   };
 
@@ -319,8 +328,8 @@ function navigateTo(newIndex) {
   loadImage(images[index]);
 }
 
-function navigatePrev() { navigateTo(index - 1); }
-function navigateNext() { navigateTo(index + 1); }
+function navigatePrev() { navDirection = 'prev'; navigateTo(index - 1); }
+function navigateNext() { navDirection = 'next'; navigateTo(index + 1); }
 function navigateFirst() { navigateTo(0); }
 function navigateLast()  { navigateTo(images.length - 1); }
 
