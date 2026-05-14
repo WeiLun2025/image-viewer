@@ -30,6 +30,7 @@ function createWindow() {
     minWidth:  WIN_MIN_WIDTH,
     minHeight: WIN_MIN_HEIGHT,
     backgroundColor: '#1a1a1a',
+    icon: path.join(__dirname, '../build/icon.ico'),
     webPreferences: {
       nodeIntegration:  false,          // 🔒 renderer 不可直接用 Node API
       contextIsolation: true,           // 🔒 隔離 renderer 與 preload 的執行環境
